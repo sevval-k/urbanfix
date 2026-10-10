@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 import { useIssues } from '../hooks/useIssues'
 import { SAMPLE_ISSUES } from '../data/sampleIssues'
 import { issuesToGeoJSON } from '../utils/geojson'
-import { downloadTextFile } from '../utils/download'
 import { issuesToPostgisSQL } from '../utils/postgis'
+import { downloadTextFile } from '../utils/download'
 import StatCard from '../components/StatCard'
 import ConfirmDialog from '../components/ConfirmDialog'
 
@@ -37,19 +37,25 @@ export default function DataPage() {
   // Rough size of what is stored (characters, close to bytes for this data).
   const sizeKB = useMemo(() => (JSON.stringify(issues).length / 1024).toFixed(1), [issues])
 
+  const exportList = () => (includeSamples ? issues : issues.filter((i) => !i.isSample))
+  // 'en-CA' formats dates as YYYY-MM-DD, which sorts well in file names.
+  const today = () => new Date().toLocaleDateString('en-CA')
+
+  const handleExport = () => {
+    downloadTextFile(
+      `urbanfix-issues-${today()}.geojson`,
+      JSON.stringify(issuesToGeoJSON(exportList()), null, 2),
+      'application/geo+json',
+    )
+  }
+
   const handleSqlExport = () => {
-  const list = includeSamples
-    ? issues
-    : issues.filter((issue) => !issue.isSample)
-
-  const date = new Date().toLocaleDateString('en-CA')
-
-  downloadTextFile(
-    `urbanfix-postgis-${date}.sql`,
-    issuesToPostgisSQL(list),
-    'application/sql',
-  )
-}
+    downloadTextFile(
+      `urbanfix-postgis-${today()}.sql`,
+      issuesToPostgisSQL(exportList()),
+      'application/sql',
+    )
+  }
 
   const dialogs = {
     samples: {
@@ -82,22 +88,49 @@ export default function DataPage() {
         <StatCard label="Stored size" value={`${sizeKB} KB`} />
       </div>
 
-      <Section title="Export for PostgreSQL / PostGIS">
-  <p className="text-sm text-slate-600">
-    Download a SQL script that creates an issues table with a
-    PostGIS point column and inserts the records. The app itself
-    still stores data in LocalStorage.
-  </p>
+      <Section title="Export as GeoJSON">
+        <p className="text-sm text-slate-600">
+          Download the issues as a GeoJSON file of points (WGS 84 / EPSG:4326). It opens in GIS
+          software such as QGIS (Layer, Add Layer, Add Vector Layer). Each record&apos;s
+          category, priority, status, date, and <code>isSample</code> flag become attributes.
+        </p>
+        <label className="flex items-center gap-2 text-sm text-slate-700">
+          <input
+            type="checkbox"
+            checked={includeSamples}
+            onChange={(e) => setIncludeSamples(e.target.checked)}
+          />
+          Include sample records
+        </label>
+        <button
+          type="button"
+          onClick={handleExport}
+          disabled={exportCount === 0}
+          className={`${buttonClass} border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700`}
+        >
+          Export {exportCount} {exportCount === 1 ? 'record' : 'records'} (.geojson)
+        </button>
+        {exportCount === 0 && (
+          <p className="text-xs text-slate-500">There is nothing to export with these settings.</p>
+        )}
+      </Section>
 
-  <button
-    type="button"
-    onClick={handleSqlExport}
-    disabled={exportCount === 0}
-    className={`${buttonClass} border-slate-300 text-slate-700 hover:bg-slate-100`}
-  >
-    Export {exportCount} {exportCount === 1 ? 'record' : 'records'} (.sql)
-  </button>
-</Section>
+      <Section title="Export for PostgreSQL / PostGIS">
+        <p className="text-sm text-slate-600">
+          Download a <code>.sql</code> script that creates an <code>issues</code> table with a
+          PostGIS point column (<code>geometry(Point, 4326)</code>) and inserts the records. This
+          prepares a future backend. The app itself still stores data in LocalStorage. It follows
+          the &quot;Include sample records&quot; setting above.
+        </p>
+        <button
+          type="button"
+          onClick={handleSqlExport}
+          disabled={exportCount === 0}
+          className={`${buttonClass} border-slate-300 text-slate-700 hover:bg-slate-100`}
+        >
+          Export {exportCount} {exportCount === 1 ? 'record' : 'records'} (.sql)
+        </button>
+      </Section>
 
       <Section title="Sample data">
         <p className="text-sm text-slate-600">

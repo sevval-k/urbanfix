@@ -121,6 +121,28 @@ export function loadIssues() {
   return { issues, notice: null }
 }
 
+// The outcome of the latest save lives here, outside React. The provider
+// reads it with useSyncExternalStore, so no setState is needed in an effect.
+let lastSaveError = null
+const saveErrorListeners = new Set()
+
+function setSaveError(message) {
+  if (message === lastSaveError) return
+  lastSaveError = message
+  saveErrorListeners.forEach((listener) => listener())
+}
+
+export function subscribeSaveError(listener) {
+  saveErrorListeners.add(listener)
+  return () => saveErrorListeners.delete(listener)
+}
+
+export function getSaveError() {
+  return lastSaveError
+}
+
+
+// Returns { ok: true } or { ok: false, message }. It never throws.
 // Returns { ok: true } or { ok: false, message }. It never throws.
 export function saveIssues(issues) {
   try {
@@ -128,15 +150,15 @@ export function saveIssues(issues) {
       STORAGE_KEY,
       JSON.stringify({ version: FORMAT_VERSION, issues }),
     )
+    setSaveError(null)
     return { ok: true }
   } catch (err) {
     const full =
       err?.name === 'QuotaExceededError' || err?.name === 'NS_ERROR_DOM_QUOTA_REACHED'
-    return {
-      ok: false,
-      message: full
-        ? "Your browser's storage for this site is full, so your latest changes are NOT being saved. Delete some records or export your data."
-        : "Changes can't be saved in this browser (storage may be blocked, for example in private browsing). Your data will be lost when you reload or close this page.",
-    }
+    const message = full
+      ? "Your browser's storage for this site is full, so your latest changes are NOT being saved. Delete some records or export your data."
+      : "Changes can't be saved in this browser (storage may be blocked, for example in private browsing). Your data will be lost when you reload or close this page."
+    setSaveError(message)
+    return { ok: false, message }
   }
 }

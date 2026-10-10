@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { IssuesContext } from './issuesContext'
 import { SAMPLE_ISSUES } from '../data/sampleIssues'
-import { loadIssues, saveIssues } from '../utils/storage'
+import { getSaveError, loadIssues, saveIssues, subscribeSaveError } from '../utils/storage'
 
 export default function IssuesProvider({ children }) {
-  // The lazy form useState(loadIssues) runs loadIssues once, on the first
-  // render only, so storage is read once per visit, not on every render.
+  // The lazy form useState(loadIssues) runs loadIssues once, on the first render only.
   const [initial] = useState(loadIssues)
   const [issues, setIssues] = useState(initial.issues)
   const [notice, setNotice] = useState(initial.notice) // load-time message
-  const [storageError, setStorageError] = useState(null) // save-time problem
 
-  // PERSIST: runs after the first render and after every change to issues.
-  // This is the one place that writes to LocalStorage.
+  // Save-time problem, read from the storage module (an external system).
+  const storageError = useSyncExternalStore(subscribeSaveError, getSaveError)
+
+  // PERSIST: the one place that writes to LocalStorage. It only writes;
+  // the result is reported through the storage module.
   useEffect(() => {
-    const result = saveIssues(issues)
-    setStorageError(result.ok ? null : result.message)
+    saveIssues(issues)
   }, [issues])
-
+  
   const dismissNotice = useCallback(() => setNotice(null), [])
 
   // CREATE: the store assigns id, createdAt, and isSample, never the form.
