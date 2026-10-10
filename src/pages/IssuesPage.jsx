@@ -1,11 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useIssues } from '../hooks/useIssues'
-import {
-  DEFAULT_FILTERS,
-  filterIssues,
-  sortIssues,
-} from '../utils/issueFilters'
+import { DEFAULT_FILTERS, filterIssues, sortIssues } from '../utils/issueFilters'
 import IssueFilters from '../components/IssueFilters'
 import IssueCard from '../components/IssueCard'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -13,22 +9,35 @@ import EmptyState from '../components/EmptyState'
 
 export default function IssuesPage() {
   const { issues, deleteIssue } = useIssues()
-
-  const [filters, setFilters] = useState(DEFAULT_FILTERS)
+  const [searchParams, setSearchParams] = useSearchParams()
+  // Search text lives in the URL (?q=...); the other filters in state.
+  const [otherFilters, setOtherFilters] = useState(DEFAULT_FILTERS)
   const [issueToDelete, setIssueToDelete] = useState(null)
 
+  const filters = { ...otherFilters, search: searchParams.get('q') ?? '' }
+
+  // The visible list is DERIVED from issues + filters, not stored in state.
   const visibleIssues = useMemo(
     () => sortIssues(filterIssues(issues, filters), filters.sortBy),
-    [issues, filters],
+    // filters is rebuilt each render, so depend on its parts
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [issues, otherFilters, searchParams],
   )
 
   const handleFilterChange = (field, value) => {
-    setFilters((prev) => ({ ...prev, [field]: value }))
+    if (field === 'search') {
+      setSearchParams(value ? { q: value } : {}, { replace: true })
+    } else {
+      setOtherFilters((prev) => ({ ...prev, [field]: value }))
+    }
+  }
+
+  const handleReset = () => {
+    setOtherFilters(DEFAULT_FILTERS)
+    setSearchParams({}, { replace: true })
   }
 
   const handleConfirmDelete = () => {
-    if (!issueToDelete) return
-
     deleteIssue(issueToDelete.id)
     setIssueToDelete(null)
   }
@@ -36,10 +45,7 @@ export default function IssuesPage() {
   return (
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">
-          Issues
-        </h1>
-
+        <h1 className="text-2xl font-bold text-slate-800">Issues</h1>
         <Link
           to="/issues/new"
           className="rounded-md bg-emerald-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-700"
@@ -48,11 +54,7 @@ export default function IssuesPage() {
         </Link>
       </div>
 
-      <IssueFilters
-        filters={filters}
-        onChange={handleFilterChange}
-        onReset={() => setFilters({ ...DEFAULT_FILTERS })}
-      />
+      <IssueFilters filters={filters} onChange={handleFilterChange} onReset={handleReset} />
 
       <p className="text-sm text-slate-600" aria-live="polite">
         Showing {visibleIssues.length} of {issues.length} issues
@@ -65,11 +67,7 @@ export default function IssuesPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {visibleIssues.map((issue) => (
-            <IssueCard
-              key={issue.id}
-              issue={issue}
-              onDelete={setIssueToDelete}
-            />
+            <IssueCard key={issue.id} issue={issue} onDelete={setIssueToDelete} />
           ))}
         </div>
       )}
