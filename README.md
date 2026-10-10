@@ -6,7 +6,7 @@ environmental pollution. Locations are picked on an interactive map or detected
 with the browser's Geolocation API. The project has a geospatial foundation so
 it can later grow into a PostgreSQL/PostGIS and data science project.
 
-**Live demo:** https://YOUR-SITE.netlify.app
+**Live demo:** http://localhost:5177/
 **Repository:** https://github.com/sevval-k/urbanfix
 
 ![Dashboard](docs/screenshots/dashboard.png)
