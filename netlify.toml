@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Single-page app: serve index.html for every path so that refreshing
+# /map, /issues, or /issues/<id>/edit works instead of returning a 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
