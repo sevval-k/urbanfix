@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Fix popup link text color on the Leaflet map */
+.leaflet-container a.urbanfix-popup-link {
+  color: #ffffff;
+}
