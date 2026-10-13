@@ -1,13 +1,16 @@
+import { lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
-
 import Layout from './components/Layout'
-import DashboardPage from './pages/DashboardPage'
-import IssuesPage from './pages/IssuesPage'
-import MapPage from './pages/MapPage'
-import AnalysisPage from './pages/AnalysisPage'
-import DataPage from './pages/DataPage'
-import NewIssuePage from './pages/NewIssuePage'
-import EditIssuePage from './pages/EditIssuePage'
+
+// lazy() loads each page's code the first time that route is visited.
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const IssuesPage = lazy(() => import('./pages/IssuesPage'))
+const MapPage = lazy(() => import('./pages/MapPage'))
+const AnalysisPage = lazy(() => import('./pages/AnalysisPage'))
+const DataPage = lazy(() => import('./pages/DataPage'))
+const NewIssuePage = lazy(() => import('./pages/NewIssuePage'))
+const EditIssuePage = lazy(() => import('./pages/EditIssuePage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 export default function App() {
   return (
@@ -20,6 +23,7 @@ export default function App() {
         <Route path="data" element={<DataPage />} />
         <Route path="issues/new" element={<NewIssuePage />} />
         <Route path="issues/:id/edit" element={<EditIssuePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   )

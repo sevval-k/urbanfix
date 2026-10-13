@@ -1,149 +1,156 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { SlidersHorizontal } from 'lucide-react'
 import { useIssues } from '../hooks/useIssues'
 import { DEFAULT_FILTERS, filterIssues } from '../utils/issueFilters'
-import {
-  COLOR_MODES,
-  getLegendItems,
-  hasValidCoordinates,
-} from '../utils/mapHelpers'
+import { COLOR_MODES, getLegendWithCounts, hasValidCoordinates } from '../utils/mapHelpers'
+import { getRecentIssues } from '../utils/stats'
+import PageHeader from '../components/PageHeader'
 import IssueFilters from '../components/IssueFilters'
 import IssuesMap from '../components/IssuesMap'
 import MapLegend from '../components/MapLegend'
-import EmptyState from '../components/EmptyState'
+import MapRecentReports from '../components/MapRecentReports'
 
 export default function MapPage() {
   const { issues } = useIssues()
-
+  // The map has its own filters, separate from the Reports page.
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
-  const [colorBy, setColorBy] = useState('category')
+  const [colorBy, setColorBy] = useState('priority')
   const [fitSignal, setFitSignal] = useState(0)
+  const [focus, setFocus] = useState(null)
+  const [magnifier, setMagnifier] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false) // small screens only
 
-  const matching = useMemo(
-    () => filterIssues(issues, filters),
-    [issues, filters],
-  )
-
-  const mappable = useMemo(
-    () => matching.filter(hasValidCoordinates),
-    [matching],
-  )
-
+  // Everything below is derived from issues + filters + colorBy.
+  const matching = useMemo(() => filterIssues(issues, filters), [issues, filters])
+  const mappable = useMemo(() => matching.filter(hasValidCoordinates), [matching])
   const unmappableCount = matching.length - mappable.length
+  const legendItems = useMemo(() => getLegendWithCounts(mappable, colorBy), [mappable, colorBy])
+  const recent = useMemo(() => getRecentIssues(mappable, 6), [mappable])
 
-  const legendItems = useMemo(
-    () =>
-      getLegendItems(colorBy).map((item) => ({
-        ...item,
-        count: mappable.filter(
-          (issue) => issue[colorBy] === item.label,
-        ).length,
-      })),
-    [colorBy, mappable],
-  )
+  const activeCount = [filters.search.trim(), filters.category, filters.status, filters.priority].filter(
+    Boolean,
+  ).length
 
-  const colorLabel = COLOR_MODES.find(
-    (mode) => mode.value === colorBy,
-  ).label
+  // Escape leaves magnifier mode.
+  useEffect(() => {
+    if (!magnifier) return undefined
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMagnifier(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [magnifier])
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({ ...prev, [field]: value }))
   }
+  const handleReset = () => setFilters(DEFAULT_FILTERS)
+
+  const emptyMessage =
+    issues.length === 0
+      ? 'No issues have been reported yet.'
+      : mappable.length === 0
+        ? 'No issues match your search or filters.'
+        : null
+
+  const filterProps = { filters, onChange: handleFilterChange, onReset: handleReset, showSort: false }
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">
-          Issues Map
-        </h1>
-
-        <Link
-          to="/issues/new"
-          className="rounded-md bg-emerald-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-700"
-        >
-          Report an Issue
-        </Link>
-      </div>
-
-      <IssueFilters
-        filters={filters}
-        onChange={handleFilterChange}
-        onReset={() => setFilters(DEFAULT_FILTERS)}
-        showSort={false}
+      <PageHeader
+        title="Issues Map"
+        description="Select a marker for details. Filter, recolor, or use the magnifier to explore."
       />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-slate-600">
-            Color markers by
-          </span>
-
-          <div
-            role="group"
-            aria-label="Color markers by"
-            className="inline-flex overflow-hidden rounded-md border border-slate-300"
-          >
-            {COLOR_MODES.map((mode) => (
-              <button
-                key={mode.value}
-                type="button"
-                aria-pressed={colorBy === mode.value}
-                onClick={() => setColorBy(mode.value)}
-                className={`px-3 py-1.5 text-sm font-medium ${
-                  colorBy === mode.value
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-white text-slate-700 hover:bg-slate-100'
-                }`}
-              >
-                {mode.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
+      {/* Small screens: filters sit behind a button so they don't fill the screen. */}
+      <div className="space-y-3 lg:hidden">
         <button
           type="button"
-          onClick={() => setFitSignal((n) => n + 1)}
-          disabled={mappable.length === 0}
-          className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => setFiltersOpen((prev) => !prev)}
+          aria-expanded={filtersOpen}
+          className="btn-secondary w-full justify-between"
         >
-          Fit all markers
+          <span className="inline-flex items-center gap-2">
+            <SlidersHorizontal size={16} aria-hidden="true" />
+            Filters
+          </span>
+          {activeCount > 0 && (
+            <span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs text-brand-700">
+              {activeCount} active
+            </span>
+          )}
         </button>
+        {filtersOpen && <IssueFilters {...filterProps} stacked />}
       </div>
 
-      <p className="text-sm text-slate-600" aria-live="polite">
+      <p className="text-sm text-muted" aria-live="polite">
         Showing {mappable.length} of {issues.length} issues on the map.
-        Click a marker for details.
       </p>
 
-      {mappable.length === 0 ? (
-        <EmptyState
-          message={
-            issues.length === 0
-              ? 'No issues have been reported yet, so there is nothing to show on the map.'
-              : 'No issues match your search or filters.'
-          }
-        />
-      ) : (
-        <IssuesMap
-          issues={mappable}
-          colorBy={colorBy}
-          fitSignal={fitSignal}
-        />
-      )}
+      <div className="grid gap-4 lg:h-[calc(100vh-14rem)] lg:min-h-[540px] lg:grid-cols-4 lg:grid-rows-1">
+        <div className="h-[65vh] min-h-[380px] lg:col-span-3 lg:h-full">
+          <IssuesMap
+            issues={mappable}
+            colorBy={colorBy}
+            fitSignal={fitSignal}
+            onFit={() => setFitSignal((n) => n + 1)}
+            focus={focus}
+            magnifier={magnifier}
+            onToggleMagnifier={() => setMagnifier((on) => !on)}
+            emptyMessage={emptyMessage}
+          />
+        </div>
 
-      <MapLegend
-        title={`Marker color: ${colorLabel}`}
-        items={legendItems}
-      />
+        <aside
+          aria-label="Filters, legend, and recent reports"
+          className="space-y-4 lg:col-span-1 lg:h-full lg:overflow-y-auto lg:pr-1"
+        >
+          <div className="hidden lg:block">
+            <IssueFilters {...filterProps} stacked />
+          </div>
+
+          <div className="card space-y-3 p-4">
+            <h2 className="text-sm font-semibold text-navy-900">Marker colors</h2>
+            <div
+              role="group"
+              aria-label="Color markers by"
+              className="grid grid-cols-3 overflow-hidden rounded-lg border border-line"
+            >
+              {COLOR_MODES.map((mode) => (
+                <button
+                  key={mode.value}
+                  type="button"
+                  aria-pressed={colorBy === mode.value}
+                  onClick={() => setColorBy(mode.value)}
+                  className={`px-2 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-600 ${
+                    colorBy === mode.value
+                      ? 'bg-brand-600 text-white'
+                      : 'bg-white text-navy-900 hover:bg-pale'
+                  }`}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+            <MapLegend items={legendItems} />
+            {colorBy === 'priority' && (
+              <p className="text-xs text-muted">
+                Resolved issues are grey with a check mark, whatever their priority.
+              </p>
+            )}
+          </div>
+
+          <MapRecentReports
+            issues={recent}
+            onSelect={(issue) => setFocus({ id: issue.id, at: Date.now() })}
+          />
+        </aside>
+      </div>
 
       {unmappableCount > 0 && (
-        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          {unmappableCount}{' '}
-          {unmappableCount === 1
-            ? 'matching issue has'
-            : 'matching issues have'}{' '}
-          invalid coordinates and cannot be shown on the map.
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          {unmappableCount} matching {unmappableCount === 1 ? 'issue has' : 'issues have'} invalid
+          coordinates and can&apos;t be shown on the map.
         </p>
       )}
     </section>

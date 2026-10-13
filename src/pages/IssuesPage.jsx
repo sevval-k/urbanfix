@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useIssues } from '../hooks/useIssues'
 import { DEFAULT_FILTERS, filterIssues, sortIssues } from '../utils/issueFilters'
+import PageHeader from '../components/PageHeader'
+import ReportIssueButton from '../components/ReportIssueButton'
 import IssueFilters from '../components/IssueFilters'
 import IssueCard from '../components/IssueCard'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -44,15 +46,11 @@ export default function IssuesPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Issues</h1>
-        <Link
-          to="/issues/new"
-          className="rounded-md bg-emerald-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-700"
-        >
-          Report an Issue
-        </Link>
-      </div>
+      <PageHeader
+        title="Issues"
+        description="Search, filter, edit, and delete reported issues."
+        actions={<ReportIssueButton />}
+      />
 
       <IssueFilters filters={filters} onChange={handleFilterChange} onReset={handleReset} />
 

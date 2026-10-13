@@ -1,5 +1,5 @@
 const PRIORITY_STYLES = {
-  Low: 'bg-slate-100 text-slate-700',
+  Low: 'bg-brand-50 text-brand-700',
   Medium: 'bg-amber-100 text-amber-800',
   High: 'bg-red-100 text-red-700',
 }

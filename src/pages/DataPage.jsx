@@ -6,6 +6,7 @@ import { issuesToPostgisSQL } from '../utils/postgis'
 import { downloadTextFile } from '../utils/download'
 import StatCard from '../components/StatCard'
 import ConfirmDialog from '../components/ConfirmDialog'
+import PageHeader from '../components/PageHeader'
 
 const buttonClass =
   'rounded-md border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50'
@@ -79,7 +80,10 @@ export default function DataPage() {
 
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-bold text-slate-800">Data</h1>
+            <PageHeader
+        title="Data"
+        description="Export, manage sample records, and understand how data is stored."
+      />
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <StatCard label="Total records" value={issues.length} />

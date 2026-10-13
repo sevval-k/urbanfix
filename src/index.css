@@ -1,33 +1,49 @@
 @import "tailwindcss";
 
-/* Design tokens. Navy is for chrome (sidebar), brand (teal) is the single
-   accent. Using tokens means one edit here restyles the whole app. */
+/* Design tokens. Your palette lives here, so one edit restyles the app.
+   Utilities generated from these names: bg-pale, border-line, text-muted,
+   text-navy-900, bg-brand-600, and so on. */
 @theme {
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  --color-navy-950: #081426;
-  --color-navy-900: #0b1b33;
-  --color-navy-800: #12284a;
-  --color-navy-700: #1b3a66;
+  --color-navy-950: #0a1b30;
+  --color-navy-900: #122b49; /* dark navy: headings and primary text */
+  --color-navy-800: #1c4068;
+  --color-navy-700: #2a5683;
 
   --color-brand-50: #f0fdfa;
   --color-brand-100: #ccfbf1;
   --color-brand-500: #14b8a6;
-  --color-brand-600: #0d9488;
+  --color-brand-600: #0d9488; /* primary teal */
   --color-brand-700: #0f766e;
+
+  --color-pale: #eaf4fa;  /* pale blue surfaces */
+  --color-line: #dce5ed;  /* light borders */
+  --color-muted: #42627f; /* secondary text */
 }
 
-/* Shared building blocks. Radius rule for the whole app:
-   cards rounded-xl, controls rounded-lg. */
+/* Radius rule for the whole app: cards rounded-xl, controls rounded-lg. */
 @layer components {
   .card {
-    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+    @apply rounded-xl border border-line bg-white shadow-sm;
   }
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-white px-4 py-2 text-sm font-medium text-navy-900 transition-colors hover:bg-pale focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
+
+/* Respect the reduced-motion setting: no animation or smooth transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -37,4 +53,11 @@
    this more specific rule. */
 .leaflet-container a.urbanfix-popup-link {
   color: #ffffff;
+}
+
+/* Magnifier mode: crosshair instead of the grab hand or the marker pointer. */
+.leaflet-container.urbanfix-magnifying,
+.leaflet-container.urbanfix-magnifying .leaflet-grab,
+.leaflet-container.urbanfix-magnifying .leaflet-interactive {
+  cursor: crosshair;
 }

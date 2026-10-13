@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useIssues } from '../hooks/useIssues'
 import { DEFAULT_FILTERS, filterIssues } from '../utils/issueFilters'
 import { hasValidCoordinates } from '../utils/mapHelpers'
+import PageHeader from '../components/PageHeader'
 import {
   categoryByPriority,
   categoryByStatus,
@@ -87,9 +88,10 @@ export default function AnalysisPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">
-        Analysis
-      </h1>
+            <PageHeader
+        title="Analysis"
+        description="Exact counts and a density view of where reports concentrate."
+      />
 
       {/* Sayısal analiz tabloları */}
       <div className="space-y-3">

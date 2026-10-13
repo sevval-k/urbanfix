@@ -1,28 +1,25 @@
-export default function MapLegend({ title, items }) {
+import { Check } from 'lucide-react'
+
+// Marker styles and how many visible issues use each. Color is never the only
+// carrier of meaning: every row has a text label and a count, and resolved
+// issues also carry a check mark.
+export default function MapLegend({ items }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {title}
-      </h2>
-
-      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-        {items.map((item) => (
-          <li
-            key={item.label}
-            className="flex items-center gap-1.5 text-sm text-slate-700"
+    <ul className="grid gap-1.5">
+      {items.map((item) => (
+        <li key={item.label} className="flex items-center gap-2 text-sm text-navy-900">
+          {/* Inline style: the color is only known at runtime. */}
+          <span
+            aria-hidden="true"
+            className="grid h-4 w-4 place-items-center rounded-full ring-1 ring-black/10"
+            style={{ backgroundColor: item.color }}
           >
-            <span
-              aria-hidden="true"
-              className="inline-block h-3 w-3 rounded-full ring-1 ring-slate-300"
-              style={{ backgroundColor: item.color }}
-            />
-
-            {item.label}
-
-            <span className="text-slate-400">({item.count})</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+            {item.resolved && <Check size={10} strokeWidth={3.5} className="text-white" />}
+          </span>
+          {item.label}
+          <span className="ml-auto text-xs tabular-nums text-muted">{item.count}</span>
+        </li>
+      ))}
+    </ul>
   )
 }

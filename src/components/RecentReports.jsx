@@ -5,16 +5,10 @@ import EmptyState from './EmptyState'
 
 export default function RecentReports({ issues }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="card h-full p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-base font-semibold text-slate-800">
-          Recent Reports
-        </h2>
-
-        <Link
-          to="/issues"
-          className="text-sm font-medium text-emerald-700 hover:underline"
-        >
+        <h2 className="text-sm font-semibold text-slate-800">Recent reports</h2>
+        <Link to="/issues" className="text-sm font-medium text-brand-700 hover:underline">
           View all
         </Link>
       </div>
@@ -37,12 +31,10 @@ export default function RecentReports({ issues }) {
                     </span>
                   )}
                 </p>
-
                 <p className="text-sm text-slate-500">
                   {issue.category} · {formatDate(issue.createdAt)}
                 </p>
               </div>
-
               <div className="flex shrink-0 gap-2">
                 <PriorityBadge priority={issue.priority} />
                 <StatusBadge status={issue.status} />

@@ -31,9 +31,9 @@ export const STATUS_COLORS = {
 }
 
 export const PRIORITY_COLORS = {
-  Low: '#64748b',
+  Low: '#0d9488',
   Medium: '#f59e0b',
-  High: '#dc2626',
+  High: '#ef4444',
 }
 
 export const DEFAULT_MAP_CENTER = [41.0082, 28.9784]

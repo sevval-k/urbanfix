@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useIssues } from '../hooks/useIssues'
 import { EMPTY_FORM } from '../utils/validation'
+import PageHeader from '../components/PageHeader'
 import IssueForm from '../components/IssueForm'
 
 export default function NewIssuePage() {
@@ -13,11 +14,11 @@ export default function NewIssuePage() {
   }
 
   return (
-    <section className="mx-auto max-w-2xl space-y-4">
-      <h1 className="text-2xl font-bold text-slate-800">
-        Report an Issue
-      </h1>
-
+    <section className="mx-auto max-w-3xl space-y-4">
+      <PageHeader
+        title="Report an Issue"
+        description="Describe the problem and mark where it is on the map."
+      />
       <IssueForm
         initialValues={EMPTY_FORM}
         onSubmit={handleSubmit}
