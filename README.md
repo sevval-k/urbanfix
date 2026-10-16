@@ -15,7 +15,7 @@ http://localhost:5177/
 ![Dashboard](docs/screenshots/dashboard.png)
 
 ## Features
-
+ 
 **Implemented**
 
 - **Dashboard** with statistics calculated from the actual records (total, pending, investigating, resolved, high priority), a category chart, a status chart, and recent reports
