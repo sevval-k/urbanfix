@@ -1,129 +1,278 @@
-# UrbanFix: Smart Urban Issue Management System
+# 🏙️ UrbanFix — Smart Urban Issue Management System
 
-UrbanFix is a web application for reporting and managing urban infrastructure
-problems such as potholes, damaged sidewalks, broken streetlights, and
-environmental pollution. Locations are picked on an interactive map or detected
-with the browser's Geolocation API. The project has a geospatial foundation so
-it can later grow into a PostgreSQL/PostGIS and data science project.
+**A map-based web application for reporting, visualizing, and analyzing urban infrastructure problems.**
 
-**Live demo:** https://urban-fix-pr.netlify.app/
+UrbanFix is a smart urban issue management platform designed to help users report and manage problems such as potholes, damaged sidewalks, broken streetlights, and environmental pollution. By combining interactive maps, geospatial data, and visual analytics, the application provides a practical way to explore urban issues and understand where they occur.
 
-**Repository:** https://github.com/sevval-k/urbanfix
+The project was developed with a focus on modern web development and Geomatics Engineering, with a geospatial foundation that supports future integration with PostgreSQL/PostGIS and data science workflows.
 
-http://localhost:5177/
+<p align="center">
+  <a href="https://urban-fix-pr.netlify.app/">
+    <img src="https://img.shields.io/badge/Live%20Demo-Visit%20UrbanFix-16a34a?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo">
+  </a>
+  <a href="https://github.com/sevval-k/urbanfix">
+    <img src="https://img.shields.io/badge/GitHub-Source%20Code-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repository">
+  </a>
+</p>
 
-![Dashboard](docs/screenshots/dashboard.png)
+<p align="center">
+  <strong>Explore the live application:</strong>
+  <a href="https://urban-fix-pr.netlify.app/">urban-fix-pr.netlify.app</a>
+</p>
 
-## Features
- 
-**Implemented**
+---
 
-- **Dashboard** with statistics calculated from the actual records (total, pending, investigating, resolved, high priority), a category chart, a status chart, and recent reports
-- **Full CRUD** for issues, with form validation, delete confirmation, search by title/description, filters by category, status, and priority, and sorting by date or priority
-- **Location picking:** click or tap the map, drag the pin, or use "Use My Current Location" (Geolocation API) with accuracy feedback and graceful handling of denied, unavailable, and timeout errors. Reporting never depends on location detection.
-- **Issues map** with markers colored by category, priority, or status, a legend with counts, popups with issue details, and filters
-- **Optional reverse geocoding** (button-triggered, cached, rate-limited to respect the Nominatim usage policy)
-- **Analysis page:** exact count tables (category by status and priority) and a grid density map showing where reports concentrate
-- **Data management:** LocalStorage persistence with safe loading of damaged data, clearly labelled sample records, GeoJSON export, and a PostGIS SQL export
-- **Automated tests** (Vitest) for validation, filtering, statistics, storage loading, GeoJSON, density grid, and SQL generation
-- Responsive layout for desktop and mobile
+## 📸 Application Preview
 
-**Not implemented (planned only)**
+<p align="center">
+  <img src="docs/screenshots/dashboard.png" width="90%" alt="UrbanFix Dashboard">
+</p>
 
-- A backend or database; data lives in the browser
-- Formal spatial analysis (hotspot statistics, clustering)
-- Any AI or machine learning feature
+<p align="center">
+  <em>Dashboard with issue statistics, category distribution, status overview, and recent reports.</em>
+</p>
 
-## Screenshots
+### Explore the Interface
 
-| Issues map | Report form |
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/map.png" alt="Interactive Issues Map" width="100%">
+      <p align="center"><strong>Interactive Issues Map</strong></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/report-form.png" alt="Issue Reporting Form" width="100%">
+      <p align="center"><strong>Issue Reporting</strong></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/analysis.png" alt="Spatial Density Analysis" width="100%">
+      <p align="center"><strong>Spatial Analysis</strong></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/mobile.png" alt="UrbanFix Mobile Interface" width="100%">
+      <p align="center"><strong>Responsive Mobile Interface</strong></p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## ✨ Key Features
+
+### 📊 Interactive Dashboard
+- Displays total reports and counts of pending, investigating, resolved, and high-priority issues.
+- Visualizes issue categories and status distributions.
+- Shows recently submitted reports.
+- Calculates statistics from the records stored in the application.
+
+### 📍 Map-Based Issue Reporting
+- Select a location by clicking or tapping an interactive map.
+- Drag the location marker to refine the selected position.
+- Use the browser's Geolocation API to detect the current location.
+- Display location accuracy and handle denied permissions, unavailable locations, and timeout errors.
+- Submit reports without requiring geolocation access.
+
+### 🗺️ Issue Visualization
+- Displays reported issues as markers on an interactive map.
+- Colors markers by category, priority, or status.
+- Provides a map legend with issue counts.
+- Opens popups containing report details.
+- Supports filtering to explore relevant issues.
+
+### 📝 Issue Management
+- Create, view, update, and delete reports.
+- Validate form inputs.
+- Confirm deletion before removing a report.
+- Search reports by title or description.
+- Filter by category, status, and priority.
+- Sort reports by date or priority.
+
+### 📈 Spatial Analysis
+- Generates exact count tables for category versus status and category versus priority.
+- Displays a grid-based density map showing where reports concentrate.
+- Helps users explore the spatial distribution of reported urban problems.
+
+### 💾 Data Management
+- Persists records in browser LocalStorage.
+- Handles damaged or invalid stored data safely.
+- Clearly labels sample records and allows them to be removed.
+- Exports records as GeoJSON.
+- Generates a SQL export for a potential PostgreSQL/PostGIS migration.
+
+### 🧪 Automated Testing
+- Uses Vitest to test core application logic.
+- Covers validation, filtering, statistics, storage loading, GeoJSON export, density calculations, and SQL generation.
+
+### 📱 Responsive Design
+- Supports desktop and mobile layouts.
+- Provides interactive map controls and forms across screen sizes.
+
+---
+
+## 🛠️ Technology Stack
+
+| Technology | Purpose |
 |---|---|
-| ![Map](docs/screenshots/map.png) | ![Report form](docs/screenshots/report-form.png) |
+| React | Component-based user interface |
+| Vite | Development server and build tooling |
+| JavaScript | Application logic |
+| Tailwind CSS | Responsive styling |
+| React Router | Client-side navigation |
+| Leaflet & React Leaflet | Interactive maps |
+| OpenStreetMap | Map tiles and geographic context |
+| Recharts | Charts and data visualization |
+| Browser Geolocation API | Current-location detection |
+| LocalStorage | Client-side data persistence |
+| Vitest | Automated testing |
+| Netlify | Live application hosting |
 
-| Density analysis | Mobile |
-|---|---|
-| ![Analysis](docs/screenshots/analysis.png) | ![Mobile](docs/screenshots/mobile.png) |
+---
 
-## Technologies
+## 🚀 Getting Started
 
-- React (Vite), JavaScript, React Router
-- Tailwind CSS
-- Leaflet, react-leaflet, and OpenStreetMap tiles
-- Recharts
-- Browser Geolocation API and LocalStorage
-- Vitest for tests
-- Netlify for hosting
+### Prerequisites
 
-## Getting started
+- Node.js 20 or newer
+- npm
 
-Requires Node.js 20 or newer.
+### Installation
+
+Clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/sevval-k/urbanfix.git
 cd urbanfix
 npm install
+```
+
+### Run the Development Server
+
+```bash
 npm run dev
 ```
 
-Other commands:
+Open the local URL displayed in your terminal. Vite commonly uses `http://localhost:5173/`, but the actual port may differ depending on your configuration.
 
-```bash
-npm test          # run the automated tests
-npm run lint      # check code style
-npm run build     # production build in dist/
-npm run preview   # serve the production build locally
+### Available Commands
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Starts the development server |
+| `npm test` | Runs automated tests |
+| `npm run lint` | Checks code style |
+| `npm run build` | Creates a production build in `dist/` |
+| `npm run preview` | Previews the production build locally |
+
+**Note:** Browser geolocation requires a secure context, such as HTTPS or `localhost`.
+
+---
+
+## 📂 Project Structure
+
+```text
+urbanfix/
+├── src/
+│   ├── components/   # Reusable UI, forms, maps, charts, and dialogs
+│   ├── pages/        # Application pages
+│   ├── context/      # Shared issue state and persistence
+│   ├── hooks/        # Geolocation, reverse geocoding, and issue hooks
+│   ├── utils/        # Validation, filtering, statistics, and exports
+│   └── data/         # Sample records
+├── docs/
+│   ├── screenshots/  # Application screenshots
+│   └── postgis-migration.md
+├── package.json
+└── README.md
 ```
 
-Browser geolocation works only on HTTPS or `localhost`.
+Most core operations are implemented as reusable functions in `src/utils/`. This structure makes the application logic easier to maintain and test independently of the user interface.
 
-## Project structure
+---
 
+## 🗺️ Geospatial Data and Database Migration
+
+UrbanFix uses geographic coordinates to represent the locations of reported urban issues. Its record structure includes stable identifiers, ISO-formatted dates, and WGS 84 coordinates.
+
+The application can export records as GeoJSON and generate a SQL script for creating a PostgreSQL/PostGIS table using:
+
+```sql
+geometry(Point, 4326)
 ```
-src/
-  components/   reusable UI pieces (forms, maps, charts, dialogs)
-  pages/        one component per route
-  context/      shared issue state and persistence
-  hooks/        custom hooks (geolocation, reverse geocoding, issues)
-  utils/        pure logic: validation, filtering, stats, density, GeoJSON, SQL
-  data/         sample records
-docs/           PostGIS migration notes and screenshots
-```
 
-Most of the logic sits in pure functions in `utils/`, which is why it is easy to test.
+This provides a starting point for future migration from browser-based storage to a spatial database.
 
-## Data and limitations
+See the [PostGIS migration documentation](docs/postgis-migration.md) for additional details.
 
-- **LocalStorage:** data is stored only in the user's browser on one device. It is not shared between users, devices, or browsers, can be cleared by the user or the browser, and is limited to roughly 5 MB. This is a deliberate first version, not a production design.
-- **Sample records** are tagged "Sample" everywhere and can be removed from the Data page.
-- **Density map:** a count of reports per square grid cell. It is a visualization, not a statistical hotspot analysis, and it depends on the chosen cell size. Busy areas may simply be where more people report.
-- **Geolocation accuracy** varies from a few meters (GPS) to kilometers (IP-based). The app shows the reported accuracy and lets users correct the pin.
-- **Reverse geocoding** uses the public Nominatim service, which suits demos but not heavy traffic. It is optional and never blocks reporting.
-- **Marker overlap:** reports at the same coordinates overlap on the map (no clustering).
-- Photos are stored as links, not uploaded files.
+---
 
-## Database migration
+## ⚠️ Current Limitations
 
-The record shape (flat fields, ISO dates, stable ids, WGS 84 coordinates) was
-designed for migration. The Data page exports a SQL script that creates a
-PostGIS table with `geometry(Point, 4326)` and loads the records. See
-[docs/postgis-migration.md](docs/postgis-migration.md).
+UrbanFix is a functional prototype. The following limitations are important when evaluating the application.
 
-## Future improvements
+- **Client-side storage:** Reports are stored in LocalStorage and are not shared across users, devices, or browsers. Browser storage can also be cleared.
+- **Sample data:** Demonstration records are labelled as samples and can be removed from the Data page.
+- **Density visualization:** The density map counts reports within square grid cells. It is a visualization, not a formal statistical hotspot analysis.
+- **Geolocation accuracy:** Location accuracy depends on the browser and device. Users can manually adjust the selected map position.
+- **Reverse geocoding:** The optional Nominatim integration is cached and rate-limited. The public service is intended for appropriate usage, not unrestricted high-volume traffic.
+- **Marker overlap:** Reports with identical coordinates may overlap because marker clustering is not implemented.
+- **Photo handling:** Photos are stored as links rather than uploaded files.
+- **No backend:** The application does not currently have a server-side API or shared database.
 
-These are ideas only. None is implemented. Each AI feature would need a clearly
-defined problem, suitable data, and a proper evaluation method before being built.
+---
 
-- Backend with PostgreSQL/PostGIS, user accounts, and shared data
-- Predicting issue priority from historical reports
-- Formal spatial analysis (for example kernel density or statistical hotspot tests) with a Python analytics backend
-- Forecasting issue volumes once enough history exists
-- Image classification to suggest a category from an uploaded photo
-- Photo uploads to object storage
+## 🔮 Future Improvements
 
-## Data attribution
+The following ideas are planned possibilities and are **not currently implemented**.
 
-Map tiles and address data &copy; [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
+- **PostgreSQL/PostGIS integration:** Store and share reports through a spatial database.
+- **User accounts:** Introduce authentication and role-based access.
+- **Issue priority prediction:** Explore machine learning models that estimate priority from historical reports.
+- **Advanced spatial analysis:** Add kernel density estimation, clustering, or statistical hotspot detection using a Python analytics backend.
+- **Issue volume forecasting:** Estimate future report volumes when sufficient historical data becomes available.
+- **Image classification:** Suggest issue categories based on uploaded photographs.
+- **Photo uploads:** Support file uploads through object storage.
 
-## Author
+Any future AI feature would require a clearly defined problem, suitable data, and an appropriate evaluation method.
 
-Built by Şevval Köntek as a web development training project, with a Geomatics Engineering focus.
+---
+
+## 🧭 Project Goals
+
+UrbanFix brings together several areas of practical development:
+
+- Web application development
+- Geographic information systems (GIS)
+- Interactive mapping and spatial visualization
+- Data management and export
+- Automated testing
+- Preparation for spatial database integration
+- Potential future machine learning applications
+
+The project demonstrates how a map-based application can organize and visualize urban infrastructure reports while providing a foundation for more advanced geospatial analysis.
+
+---
+
+## 🗺️ Data Attribution
+
+Map tiles and geographic data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright).
+
+Reverse geocoding uses the public [Nominatim service](https://nominatim.org/), subject to its usage policy.
+
+---
+
+## 👩‍💻 Author
+
+**Şevval Köntek**
+
+Developed as a web development training project with a focus on Geomatics Engineering, interactive mapping, and geospatial data applications.
+
+- **Live Demo:** https://urban-fix-pr.netlify.app/
+- **GitHub Repository:** https://github.com/sevval-k/urbanfix
+
+---
+
+<p align="center">
+  <strong>UrbanFix — Making Urban Issues Visible, One Location at a Time.</strong>
+</p>
