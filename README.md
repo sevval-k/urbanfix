@@ -25,7 +25,8 @@ The project was developed with a focus on modern web development and Geomatics E
 ## 📸 Application Preview
 
 <p align="center">
-  <img src="docs/screenshots/dashboard.png" width="90%" alt="UrbanFix Dashboard">
+  <img src="docs/screenshots/map.png" alt="Interactive Issues Map" width="100%">
+  
 </p>
 
 <p align="center">
@@ -37,7 +38,8 @@ The project was developed with a focus on modern web development and Geomatics E
 <table>
   <tr>
     <td width="50%">
-      <img src="docs/screenshots/map.png" alt="Interactive Issues Map" width="100%">
+    <img src="docs/screenshots/dashboard.png" width="90%" alt="UrbanFix Dashboard">
+      
       <p align="center"><strong>Interactive Issues Map</strong></p>
     </td>
     <td width="50%">
