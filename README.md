@@ -26,11 +26,10 @@ The project was developed with a focus on modern web development and Geomatics E
 
 <p align="center">
   <img src="docs/screenshots/map.png" alt="Interactive Issues Map" width="100%">
-  
 </p>
 
 <p align="center">
-  <em>Dashboard with issue statistics, category distribution, status overview, and recent reports.</em>
+  <em>Interactive map displaying reported urban infrastructure issues and their locations.</em>
 </p>
 
 ### Explore the Interface
@@ -38,9 +37,8 @@ The project was developed with a focus on modern web development and Geomatics E
 <table>
   <tr>
     <td width="50%">
-    <img src="docs/screenshots/dashboard.png" width="90%" alt="UrbanFix Dashboard">
-      
-      <p align="center"><strong>Interactive Issues Map</strong></p>
+      <img src="docs/screenshots/dashboard.png" width="90%" alt="UrbanFix Dashboard">
+      <p align="center"><strong>UrbanFix Dashboard</strong></p>
     </td>
     <td width="50%">
       <img src="docs/screenshots/report-form.png" alt="Issue Reporting Form" width="100%">
